@@ -1,0 +1,61 @@
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using Unity.Burst;
+using UnityEngine;
+
+[BurstCompile]
+public class CalculatePoint : MonoBehaviour
+{
+    public static List<Vector3> centerPoints = new List<Vector3>();
+    public static List<GameObject> points = new List<GameObject>();
+    public GameObject parent;
+    public  List<Vector3> debugCenterPoints = new List<Vector3>();
+    public bool renderBox = false;
+
+    private void Start()
+    {
+        debugCenterPoints = centerPoints;
+        CalculateCenterPointOfTunnel(GetVertexPositions.vertexListByIdDictionary);
+    }
+
+      void CalculateCenterPointOfTunnel(Dictionary<int , List<Vector3>> vertexListByIdDictionary)
+    {
+        foreach (var getVertexPosition  in vertexListByIdDictionary)
+        {
+            int i = 0;
+            float x = 0;
+            float y = 0;
+            float z = 0;
+            for (int j = 0; j < getVertexPosition.Value.Count; j++)
+            {
+                x += getVertexPosition.Value[j].x;
+                y += getVertexPosition.Value[j].y;
+                z += getVertexPosition.Value[j].z;
+                i++;
+                
+                if (i == 12)
+                {
+                    i = 0;
+                    centerPoints.Add(new Vector3(x / 12, y / 12, z / 12));
+                    x = 0;
+                    y = 0;
+                    z = 0;
+                }
+            }
+        }
+
+        for (int j = 0; j < centerPoints.Count; j++)
+        {
+            GameObject centerPoint = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            centerPoint.transform.SetParent(parent.transform);
+            centerPoint.name = " center point " +  j  ;
+            centerPoint.GetComponent<BoxCollider>().size = new Vector3(1 ,11,7 );
+            //centerPoint.AddComponent<PlayerCheckPoint>();
+            centerPoint.GetComponent<MeshRenderer>().enabled = renderBox;
+            centerPoint.transform.position = centerPoints[j];
+            centerPoint.GetComponent<BoxCollider>().isTrigger = true;
+            points.Add(centerPoint);
+        }
+    }
+}
