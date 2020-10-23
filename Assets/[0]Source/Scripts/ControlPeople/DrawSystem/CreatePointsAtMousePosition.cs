@@ -32,7 +32,7 @@ public class CreatePointsAtMousePosition : MonoBehaviour
     [SerializeField] private GameObject debugPrefab;
     public static  List<GameObject> debugObjects = new List<GameObject>();
     public   List<GameObject> DebugObjects = new List<GameObject>();
-    public List<Vector3> PointsAfterMouseUp = new List<Vector3>();
+    
     public Vector3 localValueCoord;
 
     public Vector3 coord;
@@ -84,11 +84,10 @@ public class CreatePointsAtMousePosition : MonoBehaviour
         //and checks if there is a minimum distance between two points 
         if (SheetOfAllPoints.Count > 0)
         {
-            if (DoesPointContainAndPermittedDistance(localValueCoord))
+            if (IsTheCoordinateInTheList(SheetOfAllPoints, localValueCoord) ||
+                IsThereADifferenceInDistanceBetweenTwoPoints(SheetOfAllPoints, localValueCoord))
                 return;
         }
-
-        //else DoesPointContainAndPermittedDistance return false
         
         if(!IsThereADifferenceBetweenTheTwoPoints(CoordinatesList,localValueCoord))
             return;
@@ -124,11 +123,7 @@ public class CreatePointsAtMousePosition : MonoBehaviour
         
     }
 
-    public void SynchronizationWithADictionary()
-    {
-        
-    }
-
+    
     public bool CanICreatePointInThisPlace()
     {
         if (CoordinatesList.Count != 0)
@@ -138,12 +133,6 @@ public class CreatePointsAtMousePosition : MonoBehaviour
                 if (IsThereADifferenceBetweenTheTwoPoints(CoordinatesList.GetRange(0, CoordinatesList.Count - 1),
                     coord))
                 {
-                   // if (!IsThereADifferenceBetweenTheTwoPointsForMouseUp(PointsAfterMouseUp, coord))
-                    //{
-                    //    return false;
-                    //}
-                        
-                   // PointsAfterMouseUp.Add(coord);
                     
                         return true;
                 }
@@ -213,22 +202,30 @@ public class CreatePointsAtMousePosition : MonoBehaviour
         return coordinates;
     }
 
-    private bool DoesPointContainAndPermittedDistance(Vector3 coordinates)
+    private bool IsThereADifferenceInDistanceBetweenTwoPoints(List<Vector3> listCoordinates,Vector3 coordinate)
     {
-        //if the coordinate is in the list of all points, then we skip it
-        if (SheetOfAllPoints.Contains(coordinates))
-        {
-            return true;
-        }
-
+        
         //check if there is a minimum distance between two points 
-        if (Vector3.Distance(coordinates, SheetOfAllPoints[SheetOfAllPoints.Count - 1]) <= minOffset)
+        if (Vector3.Distance(coordinate, listCoordinates[listCoordinates.Count - 1]) <= minOffset)
         {
             return true; //skip the point
         }
 
         return false;
     }
+
+    public bool IsTheCoordinateInTheList(List<Vector3> listCoordinates,Vector3 coordinate)
+    {
+        //if the coordinate is in the list of all points, then we skip it
+        if (listCoordinates.Contains(coordinate))
+        {
+            return true;
+        }
+
+        return false;
+
+    }
+        
 
     
 }
