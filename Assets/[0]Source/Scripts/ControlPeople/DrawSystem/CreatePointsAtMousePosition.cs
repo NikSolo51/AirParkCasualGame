@@ -18,21 +18,18 @@ public class CreatePointsAtMousePosition : MonoBehaviour
 
     [Header("[Minimum distance between two points]")] [SerializeField]
     private float minOffset = 0.5f;
-
-    public float differentFloat = 1f;
+    public float different = 1f;
+    
     public Text textForDifferentFloat;
 
-    private List<Vector3> SheetOfAllPoints = new List<Vector3>();
-    public static List<Vector3> CoordinatesList = new List<Vector3>();
-    [SerializeField] private List<Vector3> CoordList;
-    [SerializeField] private int countPointAfterZeroing;
-    [SerializeField] public static bool generate;
-    public static CreatePointsAtMousePosition Instance;
-  
-    [SerializeField] private GameObject debugPrefab;
-    public static  List<GameObject> debugObjects = new List<GameObject>();
-    public   List<GameObject> DebugObjects = new List<GameObject>();
+    private List<Vector3> listOfAllPoints = new List<Vector3>();
+    public  List<Vector3> coordinatesList = new List<Vector3>();
     
+    public static CreatePointsAtMousePosition Instance;
+
+    [SerializeField] private GameObject debugPrefab;
+    public List<GameObject> debugObjects = new List<GameObject>();
+
     public Vector3 localValueCoord;
 
     public Vector3 coord;
@@ -40,25 +37,17 @@ public class CreatePointsAtMousePosition : MonoBehaviour
     private void Start()
     {
         Instance = this;
-        CoordList = CoordinatesList;
-        DebugObjects = debugObjects;
     }
 
     public void Update()
     {
-        float.TryParse(textForDifferentFloat.text, out differentFloat);
-        if (!settingOn)
-        if (Input.GetMouseButton(0))
-        {
-           
-            Generate();
-            generate = true;
-            
-        }
-        else
-            generate = false;
+        float.TryParse(textForDifferentFloat.text, out different);
         
-      
+        if (!settingOn)
+            if (Input.GetMouseButton(0))
+            {
+                Generate();
+            }
     }
 
     public void OnSetting()
@@ -70,8 +59,6 @@ public class CreatePointsAtMousePosition : MonoBehaviour
     {
         settingOn = false;
     }
-
-    
     
     private void Generate()
     {
@@ -82,42 +69,33 @@ public class CreatePointsAtMousePosition : MonoBehaviour
         
         //Check does it contain an already existing point pointsList
         //and checks if there is a minimum distance between two points 
-        if (SheetOfAllPoints.Count > 0)
+        if (listOfAllPoints.Count > 0)
         {
-            if (IsTheCoordinateInTheList(SheetOfAllPoints, localValueCoord) ||
-                IsThereADifferenceInDistanceBetweenTwoPoints(SheetOfAllPoints, localValueCoord))
+            if (IsTheCoordinateInTheList(listOfAllPoints, localValueCoord) ||
+                IsThereADifferenceInDistanceBetweenTwoPoints(listOfAllPoints, localValueCoord))
                 return;
         }
-        
-        if(!IsThereADifferenceBetweenTheTwoPoints(CoordinatesList,localValueCoord))
+
+        if (!IsThereADifferenceBetweenTheTwoPoints(coordinatesList, localValueCoord, different) ||
+            !IsThereADifferenceBetweenTheTwoPoints(ControlPeople.controlPeopleBehaviour.localPeoplePosition,
+                localValueCoord, different))
             return;
         
-        if(!IsThereADifferenceBetweenTheTwoPoints(ControlPeople.controlPeopleBehaviour.localPeoplePosition,localValueCoord))
-            return;
-
         
-        SheetOfAllPoints.Add(localValueCoord);
+        listOfAllPoints.Add(localValueCoord);
         
 
-        if (CoordinatesList.Count < ControlPeople.controlPeopleBehaviour.GetPeopleDictionaryCount())
+        if (coordinatesList.Count < ControlPeople.controlPeopleBehaviour.GetPeopleDictionaryCount())
         {
-            CoordinatesList.Add(localValueCoord);
+            coordinatesList.Add(localValueCoord);
             ControlPeople.controlPeopleBehaviour.Tick();
         }
-
-        if (countPointAfterZeroing >= ControlPeople.controlPeopleBehaviour.GetPeopleDictionaryCount())
-            countPointAfterZeroing = 0;
-        
-        
-        if (CoordinatesList.Count == ControlPeople.controlPeopleBehaviour.GetPeopleDictionaryCount())
+        else
         {
-           // CoordinatesList[countPointAfterZeroing] = coordinates;
-            //SynchronizationWithADictionary();
             ControlPeople.controlPeopleBehaviour.Tick();
-            //countPointAfterZeroing++;
         }
-
-        if (debugObjects.Count >= CreatePointsAtMousePosition.CoordinatesList.Count)
+        
+        if (debugObjects.Count >= coordinatesList.Count)
             return;
         GameObject point = PointVisualization(debugPrefab, OriginSystem, localValueCoord, Vector3.one / 2);
         debugObjects.Add(point);
@@ -127,17 +105,16 @@ public class CreatePointsAtMousePosition : MonoBehaviour
     
     public bool CanICreatePointInThisPlace()
     {
-        if (CoordinatesList.Count != 0)
+        if (coordinatesList.Count != 0)
         {
-            if (SheetOfAllPoints.Count > 0)
+            if (listOfAllPoints.Count > 0)
             {
-                if (IsThereADifferenceBetweenTheTwoPoints(CoordinatesList.GetRange(0, CoordinatesList.Count - 1),
-                    coord))
+                if (IsThereADifferenceBetweenTheTwoPoints(coordinatesList.GetRange(0, coordinatesList.Count - 1),
+                    coord, different))
                 {
                     
                         return true;
                 }
-                    
             }
                
         }
@@ -146,7 +123,7 @@ public class CreatePointsAtMousePosition : MonoBehaviour
     }
    
     
-    public bool IsThereADifferenceBetweenTheTwoPoints(List<Vector3> pointsList, Vector2 point)
+    public bool IsThereADifferenceBetweenTheTwoPoints(List<Vector3> pointsList, Vector2 point , float allowedDifference)
     {
         float distanceToClosestPoint = Mathf.Infinity;
         Vector3 closestPoint = Vector3.zero;
@@ -165,20 +142,21 @@ public class CreatePointsAtMousePosition : MonoBehaviour
                 }
             }
         }
-        
-        Vector2 different = point - new Vector2(closestPoint.x,closestPoint.y);
-        
+
+        Vector2 different = point - new Vector2(closestPoint.x, closestPoint.y);
+
         if (point == new Vector2(closestPoint.x, closestPoint.y))
         {
-            if(IsThereADifferenceBetweenTheTwoPoints(new List<Vector3>(pointsList.Where(x => x != closestPoint )), point));
-            return true; 
-        }
-        
-        if (Mathf.Abs(different.x) >= differentFloat || Mathf.Abs(different.y) >= differentFloat)
-        {
-            
+            if (IsThereADifferenceBetweenTheTwoPoints(new List<Vector3>(pointsList.Where(x => x != closestPoint)),
+                point, allowedDifference)) ;
             return true;
         }
+
+        if (Mathf.Abs(different.x) >= allowedDifference || Mathf.Abs(different.y) >= allowedDifference)
+        {
+            return true;
+        }
+
         return false;
     }
 

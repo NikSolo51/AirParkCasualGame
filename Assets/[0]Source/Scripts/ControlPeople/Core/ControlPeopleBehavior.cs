@@ -7,7 +7,7 @@ using UnityEngine;
 /*
   Description:
   Objects with the AddPeoplesToLinkList component are attracted 
-  to the coordinates recorded in the CoordinatesList.
+  to the coordinates recorded in the coordinatesList.
  */
 [BurstCompile]
 public class ControlPeopleBehaviour : MonoBehaviour
@@ -141,9 +141,9 @@ public class ControlPeopleBehaviour : MonoBehaviour
 
     public void Tick()
     {
-        for (int i = 0; i < CreatePointsAtMousePosition.CoordinatesList.Count; i++)
+        for (int i = 0; i < CreatePointsAtMousePosition.Instance.coordinatesList.Count; i++)
         {
-            NearestPoint(ControlPeople.controlPeopleBehaviour.LinkList, CreatePointsAtMousePosition.CoordinatesList[i]);
+            NearestPoint(ControlPeople.controlPeopleBehaviour.LinkList, CreatePointsAtMousePosition.Instance.coordinatesList[i]);
             
             if (LinkList[i] != null)
             {
@@ -153,13 +153,13 @@ public class ControlPeopleBehaviour : MonoBehaviour
                     if (dic.ContainsKey(LinkList[nearestPoint]))
                     {
                         NearestPoint(ControlPeople.controlPeopleBehaviour.LinkList,
-                            CreatePointsAtMousePosition.CoordinatesList[i]);
+                            CreatePointsAtMousePosition.Instance.coordinatesList[i]);
                     }
                 }
 
                 foreach (var dic in ListOfDictionariesOfPointsAndPeople)
                 {
-                    if (dic.ContainsValue(CreatePointsAtMousePosition.CoordinatesList[i]))
+                    if (dic.ContainsValue(CreatePointsAtMousePosition.Instance.coordinatesList[i]))
                     { 
                         goto Continue;
                     }
@@ -167,7 +167,7 @@ public class ControlPeopleBehaviour : MonoBehaviour
                 
                 if (!ContainsNearestPoint(ListOfDictionariesOfPointsAndPeople, nearestPoint))
                 {
-                    ListOfDictionariesOfPointsAndPeople[queue].Add(LinkList[nearestPoint], CreatePointsAtMousePosition.CoordinatesList[i]);
+                    ListOfDictionariesOfPointsAndPeople[queue].Add(LinkList[nearestPoint], CreatePointsAtMousePosition.Instance.coordinatesList[i]);
                     CreatePointsAtMousePosition.Instance.coord = CreatePointsAtMousePosition.Instance.localValueCoord;
                 }
                 else

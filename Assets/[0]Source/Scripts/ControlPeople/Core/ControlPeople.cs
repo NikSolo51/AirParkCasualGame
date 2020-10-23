@@ -100,34 +100,34 @@ public class ControlPeople : MonoBehaviour
                 if (TimerList[i] <= 0)
                 {
                    
-                    for (int j = 0; j < CreatePointsAtMousePosition.CoordinatesList.Count; j++)
+                    for (int j = 0; j < CreatePointsAtMousePosition.Instance.coordinatesList.Count; j++)
                     {
                         
                         
                             foreach (var dic in DictionaryList.ElementAt(i))
                             {
-                                if(CreatePointsAtMousePosition.CoordinatesList.Count <= 0)
+                                if(CreatePointsAtMousePosition.Instance.coordinatesList.Count <= 0)
                                     continue;
                                
-                                if (dic.Value == CreatePointsAtMousePosition.CoordinatesList[j])
+                                if (dic.Value == CreatePointsAtMousePosition.Instance.coordinatesList[j])
                                 {
-                                    CreatePointsAtMousePosition.CoordinatesList.RemoveAt(j);
+                                    CreatePointsAtMousePosition.Instance.coordinatesList.RemoveAt(j);
                                 }
                             }
                     }
                     
                     
-                    for (int j = 0; j < CreatePointsAtMousePosition.debugObjects.Count; j++)
+                    for (int j = 0; j < CreatePointsAtMousePosition.Instance.debugObjects.Count; j++)
                     {
                         
                             foreach (var dic in  DictionaryList.ElementAt(i))
                             {
-                                if(CreatePointsAtMousePosition.debugObjects.Count != 0 )
+                                if(CreatePointsAtMousePosition.Instance.debugObjects.Count != 0 )
                               
-                                if (dic.Value.Equals(CreatePointsAtMousePosition.debugObjects[j].transform.localPosition))
+                                if (dic.Value.Equals(CreatePointsAtMousePosition.Instance.debugObjects[j].transform.localPosition))
                                 {
-                                    Destroy(CreatePointsAtMousePosition.debugObjects[j]);
-                                    CreatePointsAtMousePosition.debugObjects.RemoveAt(j);
+                                    Destroy(CreatePointsAtMousePosition.Instance.debugObjects[j]);
+                                    CreatePointsAtMousePosition.Instance.debugObjects.RemoveAt(j);
                                 }
                             }
                         
