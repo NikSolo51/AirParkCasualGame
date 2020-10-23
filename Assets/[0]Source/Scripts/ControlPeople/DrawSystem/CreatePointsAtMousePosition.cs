@@ -76,7 +76,7 @@ public class CreatePointsAtMousePosition : MonoBehaviour
     private void Generate()
     {
         //Get Coordinates  mouse position in local space
-        localValueCoord = CalculateLocalPointOnScreen();
+        localValueCoord = CalculateLocalPointOnScreen(OriginSystem,2);
       
        
         
@@ -115,11 +115,12 @@ public class CreatePointsAtMousePosition : MonoBehaviour
             //SynchronizationWithADictionary();
             ControlPeople.controlPeopleBehaviour.Tick();
             //countPointAfterZeroing++;
-            
         }
-        
-        DebugPrimitive(localValueCoord);
-       
+
+        if (debugObjects.Count >= CreatePointsAtMousePosition.CoordinatesList.Count)
+            return;
+        GameObject point = PointVisualization(debugPrefab, OriginSystem, localValueCoord, Vector3.one / 2);
+        debugObjects.Add(point);
         
     }
 
@@ -180,25 +181,24 @@ public class CreatePointsAtMousePosition : MonoBehaviour
         }
         return false;
     }
-  
 
-    private void DebugPrimitive(Vector3 coord)
+
+    
+    
+    private GameObject PointVisualization(GameObject Prefab,Transform Origin,Vector3 coordinate , Vector3 scale)
     {
-        if(debugObjects.Count >= CreatePointsAtMousePosition.CoordinatesList.Count )
-            return;
-        
-        GameObject pref =  Instantiate(debugPrefab,OriginSystem);
-       pref.transform.localPosition = coord;
-       pref.transform.localScale = new Vector3(0.5f,0.5f,0.5f);
-       debugObjects.Add(pref);
+        GameObject point = Instantiate(debugPrefab, Origin);
+        point.transform.localPosition = coordinate;
+        point.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
+        return point;
     }
-    public Vector3 CalculateLocalPointOnScreen()
+
+    public Vector3 CalculateLocalPointOnScreen(Transform Origin, float beamLength)
     {
         Ray mRay = Camera.main.ScreenPointToRay(Input.mousePosition);
         Vector3 coordinates = mRay.origin + (mRay.direction * 12f);
-        coordinates = OriginSystem.transform.InverseTransformPoint(coordinates);
-        coordinates.z = 2 ;
-        
+        coordinates = Origin.transform.InverseTransformPoint(coordinates);
+        coordinates.z = beamLength;
         return coordinates;
     }
 
