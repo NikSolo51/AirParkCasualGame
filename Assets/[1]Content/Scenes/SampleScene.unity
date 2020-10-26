@@ -857,9 +857,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   OriginSystem: {fileID: 1403884231}
-  minOffset: 0
-  different: 1
-  textForDifferentFloat: {fileID: 1516669204}
+  minOffset: 0.5
+  different: 1.1
   coordinatesList: []
   debugPrefab: {fileID: 5927304666636758304, guid: 05e67f8658a31bb438b83f6863038289,
     type: 3}
@@ -892,11 +891,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a216e6f116cf1a24a8c3ce834554243d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  debugList: []
-  ValueList: []
-  Queue: 0
-  TimeToClear: 0
-  ClearTime: {fileID: 216772914}
+  Clearing: {fileID: 0}
+  TimeToClear: 0.36
 --- !u!1 &216772912
 GameObject:
   m_ObjectHideFlags: 0
@@ -4834,7 +4830,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &912734499
 RectTransform:
   m_ObjectHideFlags: 0
