@@ -27,7 +27,7 @@ public class Clearing : MonoBehaviour
     
      private void Clear()
     {
-        if (!ControlPeople.ControlPeopleBehaviour.HaveAllPeopleReachedThePoints())
+        if (!ControlPeople.MovePeopleToPointInDictionary.HaveAllPeopleReachedThePoints())
             return;
 
         if (Input.GetMouseButton(0))
@@ -50,7 +50,7 @@ public class Clearing : MonoBehaviour
                     
                     RemovingVisualizationSpheresIfTheyAreFoundInTheDictionary(i);
 
-                    ControlPeople.ControlPeopleBehaviour.DictionaryList.RemoveAt(i);
+                    ControlPeople.MovePeopleToPointInDictionary.DictionaryList.RemoveAt(i);
                     DictionaryList[i].Clear();
                     TimerList.RemoveAt(i);
                     DictionaryList.RemoveAt(i);

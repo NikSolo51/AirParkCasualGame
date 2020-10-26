@@ -12,6 +12,7 @@ using UnityEngine.UI;
 public class ControlPeople : MonoBehaviour
 {
     public static readonly ControlPeopleBehaviour ControlPeopleBehaviour = new ControlPeopleBehaviour();
+    public static readonly MovePeopleToPointInDictionary MovePeopleToPointInDictionary = new MovePeopleToPointInDictionary();
     
     public List<Transform> debugList;
     public List<Vector3> ValueList = new List<Vector3>();
@@ -42,15 +43,17 @@ public class ControlPeople : MonoBehaviour
 
         Queue = ControlPeopleBehaviour.queue;
 
-        ControlPeopleBehaviour.MoveToPoint();
+        MovePeopleToPointInDictionary.MoveToPoint();
 
         if (Input.GetMouseButtonUp(0))
         {
             if (CreatePointsAtMousePosition.Instance.CanICreatePointInThisPlace())
             {
                 Clearing.Instance.AddToClear(ControlPeopleBehaviour.ListOfDictionariesOfPointsAndPeople[Queue], TimeToClear);
-                ControlPeople.ControlPeopleBehaviour.AddPointForMoveToPoint(
+                
+                MovePeopleToPointInDictionary.AddPointForMoveToPoint(
                     ControlPeople.ControlPeopleBehaviour.ListOfDictionariesOfPointsAndPeople[Queue]);
+                
                 ControlPeople.ControlPeopleBehaviour.IncrementQueue();
                 ControlPeople.ControlPeopleBehaviour.ClearIfQueueEqualsZero();
             }
