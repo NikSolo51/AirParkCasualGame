@@ -78,11 +78,11 @@ public class CreatePointsAtMousePosition : MonoBehaviour
         if (coordinatesList.Count < ControlPeople.ControlPeopleBehaviour.GetPeopleDictionaryCount())
         {
             coordinatesList.Add(localValueCoord);
-            ControlPeople.ControlPeopleBehaviour.ChooseTheNearestPerson();
+            ControlPeople.ControlPeopleBehaviour.Tick();
         }
         else
         {
-            ControlPeople.ControlPeopleBehaviour.ChooseTheNearestPerson();
+            ControlPeople.ControlPeopleBehaviour.Tick();
         }
         
         if (debugObjects.Count >= coordinatesList.Count)
@@ -102,7 +102,8 @@ public class CreatePointsAtMousePosition : MonoBehaviour
                 if (IsThereADifferenceBetweenTheTwoPoints(coordinatesList.GetRange(0, coordinatesList.Count - 1),
                     coord, different))
                 {
-                    return true;
+                    
+                        return true;
                 }
             }
                
