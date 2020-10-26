@@ -9,22 +9,27 @@ using UnityEngine;
   Objects with the AddPeoplesToLinkList component are attracted 
   to the coordinates recorded in the coordinatesList.
  */
+
 [BurstCompile]
 public class ControlPeopleBehaviour : MonoBehaviour
 {
     public List<Transform> LinkList = new List<Transform>();
     public  Dictionary<int, Transform> peopleDictionary = new Dictionary<int, Transform>();
     public int nearestPoint;
+    
     //List of dictionaries of Points and people adjacent to them
-    public  List<Dictionary<Transform,Vector3>> ListOfDictionariesOfPointsAndPeople  = new List<Dictionary<Transform, Vector3>>( );
+    public  List<Dictionary<Transform,Vector3>> ListOfDictionariesOfPointsAndPeople  = new List<Dictionary<Transform, Vector3>>();
+    
     public  int queue = 0;
     public  List<Dictionary<Transform, Vector3>> DictionaryList = new List<Dictionary<Transform, Vector3>>();
+    
     public List<Vector3> localPeoplePosition = new List<Vector3>();
     
     public void InitializingTheUsedPeopleDictionarySheet()
     {
         ListOfDictionariesOfPointsAndPeople.Add(new Dictionary<Transform, Vector3>());
     }
+    
     public void PeopleDictionaryAdd(int id, Transform people)
     {
         peopleDictionary.Add(id,people);
@@ -143,7 +148,7 @@ public class ControlPeopleBehaviour : MonoBehaviour
     {
         for (int i = 0; i < CreatePointsAtMousePosition.Instance.coordinatesList.Count; i++)
         {
-            NearestPoint(ControlPeople.controlPeopleBehaviour.LinkList, CreatePointsAtMousePosition.Instance.coordinatesList[i]);
+            NearestPoint(ControlPeople.ControlPeopleBehaviour.LinkList, CreatePointsAtMousePosition.Instance.coordinatesList[i]);
             
             if (LinkList[i] != null)
             {
@@ -152,7 +157,7 @@ public class ControlPeopleBehaviour : MonoBehaviour
                 {
                     if (dic.ContainsKey(LinkList[nearestPoint]))
                     {
-                        NearestPoint(ControlPeople.controlPeopleBehaviour.LinkList,
+                        NearestPoint(ControlPeople.ControlPeopleBehaviour.LinkList,
                             CreatePointsAtMousePosition.Instance.coordinatesList[i]);
                     }
                 }

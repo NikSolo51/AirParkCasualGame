@@ -10,11 +10,11 @@ public class AddPeoplesToLinkList : MonoBehaviour
     private void Start()
     {
         id = transform.GetSiblingIndex();
-        ControlPeople.controlPeopleBehaviour.PeopleDictionaryAdd(id,transform);
-       ControlPeople.controlPeopleBehaviour.localPeoplePosition.Add(transform.localPosition);
+        ControlPeople.ControlPeopleBehaviour.PeopleDictionaryAdd(id,transform);
+       ControlPeople.ControlPeopleBehaviour.localPeoplePosition.Add(transform.localPosition);
            //yep x2 it is correct
-        ControlPeople.controlPeopleBehaviour.InitializingTheUsedPeopleDictionarySheet();
-        ControlPeople.controlPeopleBehaviour.InitializingTheUsedPeopleDictionarySheet();
+        ControlPeople.ControlPeopleBehaviour.InitializingTheUsedPeopleDictionarySheet();
+        ControlPeople.ControlPeopleBehaviour.InitializingTheUsedPeopleDictionarySheet();
         //Debug.Log(ControlPeople.controlPeopleBehaviour.ListOfDictionariesOfPointsAndPeople.Count);
         //ControlPeople.controlPeopleBehaviour.LinkList.Add(transform);
 

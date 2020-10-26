@@ -22,7 +22,7 @@ public class CreatePointsAtMousePosition : MonoBehaviour
     
     public Text textForDifferentFloat;
 
-    private List<Vector3> listOfAllPoints = new List<Vector3>();
+    private readonly List<Vector3> listOfAllPoints = new List<Vector3>();
     public  List<Vector3> coordinatesList = new List<Vector3>();
     
     public static CreatePointsAtMousePosition Instance;
@@ -33,7 +33,7 @@ public class CreatePointsAtMousePosition : MonoBehaviour
     public Vector3 localValueCoord;
 
     public Vector3 coord;
-    public static bool settingOn = true;
+    
     private void Start()
     {
         Instance = this;
@@ -42,23 +42,13 @@ public class CreatePointsAtMousePosition : MonoBehaviour
     public void Update()
     {
         float.TryParse(textForDifferentFloat.text, out different);
-        
-        if (!settingOn)
-            if (Input.GetMouseButton(0))
-            {
-                Generate();
-            }
-    }
 
-    public void OnSetting()
-    {
-        settingOn = true;
+        if (Input.GetMouseButton(0))
+        {
+            Generate();
+        }
     }
     
-    public void OffSetting()
-    {
-        settingOn = false;
-    }
     
     private void Generate()
     {
@@ -77,7 +67,7 @@ public class CreatePointsAtMousePosition : MonoBehaviour
         }
 
         if (!IsThereADifferenceBetweenTheTwoPoints(coordinatesList, localValueCoord, different) ||
-            !IsThereADifferenceBetweenTheTwoPoints(ControlPeople.controlPeopleBehaviour.localPeoplePosition,
+            !IsThereADifferenceBetweenTheTwoPoints(ControlPeople.ControlPeopleBehaviour.localPeoplePosition,
                 localValueCoord, different))
             return;
         
@@ -85,14 +75,14 @@ public class CreatePointsAtMousePosition : MonoBehaviour
         listOfAllPoints.Add(localValueCoord);
         
 
-        if (coordinatesList.Count < ControlPeople.controlPeopleBehaviour.GetPeopleDictionaryCount())
+        if (coordinatesList.Count < ControlPeople.ControlPeopleBehaviour.GetPeopleDictionaryCount())
         {
             coordinatesList.Add(localValueCoord);
-            ControlPeople.controlPeopleBehaviour.Tick();
+            ControlPeople.ControlPeopleBehaviour.Tick();
         }
         else
         {
-            ControlPeople.controlPeopleBehaviour.Tick();
+            ControlPeople.ControlPeopleBehaviour.Tick();
         }
         
         if (debugObjects.Count >= coordinatesList.Count)

@@ -858,14 +858,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   OriginSystem: {fileID: 1403884231}
   minOffset: 0
-  differentFloat: 1
+  different: 1
   textForDifferentFloat: {fileID: 1516669204}
-  CoordList: []
-  countPointAfterZeroing: 0
+  coordinatesList: []
   debugPrefab: {fileID: 5927304666636758304, guid: 05e67f8658a31bb438b83f6863038289,
     type: 3}
-  DebugObjects: []
-  PointsAfterMouseUp: []
+  debugObjects: []
   localValueCoord: {x: 0, y: 0, z: 0}
   coord: {x: 0, y: 0, z: 0}
 --- !u!4 &196360634
@@ -895,9 +893,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   debugList: []
-  bufferGameobj: {fileID: 1403884230}
-  Queue: 0
   ValueList: []
+  Queue: 0
   TimeToClear: 0
   ClearTime: {fileID: 216772914}
 --- !u!1 &216772912

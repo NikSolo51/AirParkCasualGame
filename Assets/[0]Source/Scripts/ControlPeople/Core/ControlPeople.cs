@@ -11,140 +11,52 @@ using UnityEngine.UI;
 [BurstCompile]
 public class ControlPeople : MonoBehaviour
 {
-    public static ControlPeopleBehaviour controlPeopleBehaviour = new ControlPeopleBehaviour();
+    public static readonly ControlPeopleBehaviour ControlPeopleBehaviour = new ControlPeopleBehaviour();
+    
     public List<Transform> debugList;
-    private static GameObject BufferGameObject;
-    public GameObject bufferGameobj;
-    public int Queue;
-    private List<Dictionary<Transform, Vector3>> DictionaryList = new List<Dictionary<Transform, Vector3>>();
-    private List<float> TimerList = new List<float>();
     public List<Vector3> ValueList = new List<Vector3>();
+    
+    public int Queue;
+
     public float TimeToClear = 1;
     public Text ClearTime;
     
-   
-  
+    public static ControlPeople Instance;
+
+
     private void Start()
     {
-        BufferGameObject = bufferGameobj;
-        debugList = controlPeopleBehaviour.LinkList;
-        ValueList = controlPeopleBehaviour.ListOfDictionariesOfPointsAndPeople[Queue].Values.ToList();
+        debugList = ControlPeopleBehaviour.LinkList;
+        ValueList = ControlPeopleBehaviour.ListOfDictionariesOfPointsAndPeople[Queue].Values.ToList();
     }
-    
+
     private void Update()
     {
         float.TryParse(ClearTime.text, out TimeToClear);
-        
-        for (int i = 0; i < ControlPeople.controlPeopleBehaviour.peopleDictionary.Count; i++)
+
+        for (int i = 0; i < ControlPeople.ControlPeopleBehaviour.peopleDictionary.Count; i++)
         {
-            ControlPeople.controlPeopleBehaviour.localPeoplePosition[i] =
-                ControlPeople.controlPeopleBehaviour.peopleDictionary.ElementAt(i).Value.localPosition;
+            ControlPeopleBehaviour.localPeoplePosition[i] =
+               ControlPeopleBehaviour.peopleDictionary.ElementAt(i).Value.localPosition;
         }
-        Queue = controlPeopleBehaviour.queue;
-        
-            controlPeopleBehaviour.MoveToPoint();
-            
+
+        Queue = ControlPeopleBehaviour.queue;
+
+        ControlPeopleBehaviour.MoveToPoint();
+
         if (Input.GetMouseButtonUp(0))
         {
-            
             if (CreatePointsAtMousePosition.Instance.CanICreatePointInThisPlace())
             {
-             
-                AddToClearQueue(controlPeopleBehaviour.ListOfDictionariesOfPointsAndPeople[Queue], TimeToClear);
-               
+                Clearing.Instance.AddToClear(ControlPeopleBehaviour.ListOfDictionariesOfPointsAndPeople[Queue], TimeToClear);
+                ControlPeople.ControlPeopleBehaviour.AddPointForMoveToPoint(
+                    ControlPeople.ControlPeopleBehaviour.ListOfDictionariesOfPointsAndPeople[Queue]);
+                ControlPeople.ControlPeopleBehaviour.IncrementQueue();
+                ControlPeople.ControlPeopleBehaviour.ClearIfQueueEqualsZero();
             }
         }
 
-        Clear();
-
+        Clearing.Instance.Tick();
     }
-
-    public void AddToClearQueue(Dictionary<Transform, Vector3> dic, float timeToDelete)
-    {
-        
-        if(DictionaryList.Contains(dic))
-            return;
-        if(dic.Keys.Count == 0)
-            return;
-        
-       
-        
-        ControlPeople.controlPeopleBehaviour.AddPointForMoveToPoint(controlPeopleBehaviour.ListOfDictionariesOfPointsAndPeople[Queue]);
-        ControlPeople.controlPeopleBehaviour.IncrementQueue();
-        ControlPeople.controlPeopleBehaviour.ClearIfQueueEqualsZero();
-        
-        DictionaryList.Add(dic);
-        TimerList.Add(timeToDelete);
-        
-    }
-
-    public void Clear()
-    {
-        if(!controlPeopleBehaviour.HaveAllPeopleReachedThePoints())
-            return;
-        
-        if(Input.GetMouseButton(0))
-            return;
-        
-        if(DictionaryList == null || TimerList == null)
-            return;
-        
-
-            for (int i = 0; i < DictionaryList.Count; i++)
-        {
-            if (DictionaryList[i].Keys.Count != 0)
-            {
-                if(TimerList[i] > -Mathf.Epsilon)
-                TimerList[i] -= Time.deltaTime;
-                
-                if (TimerList[i] <= 0)
-                {
-                   
-                    for (int j = 0; j < CreatePointsAtMousePosition.Instance.coordinatesList.Count; j++)
-                    {
-                        
-                        
-                            foreach (var dic in DictionaryList.ElementAt(i))
-                            {
-                                if(CreatePointsAtMousePosition.Instance.coordinatesList.Count <= 0)
-                                    continue;
-                               
-                                if (dic.Value == CreatePointsAtMousePosition.Instance.coordinatesList[j])
-                                {
-                                    CreatePointsAtMousePosition.Instance.coordinatesList.RemoveAt(j);
-                                }
-                            }
-                    }
-                    
-                    
-                    for (int j = 0; j < CreatePointsAtMousePosition.Instance.debugObjects.Count; j++)
-                    {
-                        
-                            foreach (var dic in  DictionaryList.ElementAt(i))
-                            {
-                                if(CreatePointsAtMousePosition.Instance.debugObjects.Count != 0 )
-                              
-                                if (dic.Value.Equals(CreatePointsAtMousePosition.Instance.debugObjects[j].transform.localPosition))
-                                {
-                                    Destroy(CreatePointsAtMousePosition.Instance.debugObjects[j]);
-                                    CreatePointsAtMousePosition.Instance.debugObjects.RemoveAt(j);
-                                }
-                            }
-                        
-                        
-                    }
-                    
-                    ControlPeople.controlPeopleBehaviour.DictionaryList.RemoveAt(i);
-                    DictionaryList[i].Clear();
-                    TimerList.RemoveAt(i);
-                    DictionaryList.RemoveAt(i);
-                }
-                   
-            }
-
-            
-        }
-    }
-   
     
 }
