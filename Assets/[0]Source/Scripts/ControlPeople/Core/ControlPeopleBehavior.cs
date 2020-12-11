@@ -21,7 +21,7 @@ public class ControlPeopleBehaviour : MonoBehaviour
     public  List<Dictionary<Transform,Vector3>> ListOfDictionariesOfPointsAndPeople  = new List<Dictionary<Transform, Vector3>>();
     
     public  int queue = 0;
-    public  List<Dictionary<Transform, Vector3>> DictionaryList = new List<Dictionary<Transform, Vector3>>();
+   
     
     public List<Vector3> localPeoplePosition = new List<Vector3>();
     
@@ -87,47 +87,10 @@ public class ControlPeopleBehaviour : MonoBehaviour
 
             Continue: ;
         }
-        nearestPoint = closestPoint; 
-        
+        nearestPoint = closestPoint;
     }
 
-    public void AddPointForMoveToPoint(Dictionary<Transform,Vector3> dictionary)
-    {
-        DictionaryList.Add(dictionary);
-    }
-
-    public void MoveToPoint() 
-    {
-        
-        foreach (var dic in DictionaryList)
-        {
-            
-            foreach (var usedPeoples in dic)
-            {
-                if (usedPeoples.Key.localPosition != usedPeoples.Value)
-                {
-                    usedPeoples.Key.localPosition = Vector3.MoveTowards(usedPeoples.Key.localPosition,
-                        usedPeoples.Value,
-                        Time.deltaTime * 30f);
-                }
-            }
-        }
-    }
-
-    public bool HaveAllPeopleReachedThePoints()
-    {
-        foreach (var dic in DictionaryList)
-        {
-            foreach (var usedPeoples in dic)
-            {
-                if (usedPeoples.Key.localPosition != usedPeoples.Value)
-                {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
+    
     
     public bool ContainsNearestPoint(List<Dictionary<Transform,Vector3>> ListOfDictionary, int NearestPoint )
     {
@@ -142,9 +105,7 @@ public class ControlPeopleBehaviour : MonoBehaviour
         return false;
     }
     
-    
-
-    public void Tick()
+    public void ChooseTheNearestPerson()
     {
         for (int i = 0; i < CreatePointsAtMousePosition.Instance.coordinatesList.Count; i++)
         {
