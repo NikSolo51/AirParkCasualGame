@@ -34,10 +34,10 @@ public class CalculatePoint : MonoBehaviour
                 z += getVertexPosition.Value[j].z;
                 i++;
                 
-                if (i == 12)
+                if (i == getVertexPosition.Value.Count)
                 {
                     i = 0;
-                    centerPoints.Add(new Vector3(x / 12, y / 12, z / 12));
+                    centerPoints.Add(new Vector3(x / getVertexPosition.Value.Count, y / getVertexPosition.Value.Count, z / getVertexPosition.Value.Count));
                     x = 0;
                     y = 0;
                     z = 0;

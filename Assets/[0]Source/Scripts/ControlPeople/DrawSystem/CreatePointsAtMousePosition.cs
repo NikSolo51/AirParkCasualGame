@@ -41,7 +41,6 @@ public class CreatePointsAtMousePosition : MonoBehaviour
     public void Update()
     {
         
-
         if (Input.GetMouseButton(0))
         {
             Generate();
