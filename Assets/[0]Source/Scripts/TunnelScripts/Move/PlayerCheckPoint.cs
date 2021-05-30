@@ -5,11 +5,16 @@ using UnityEngine;
 
 public class PlayerCheckPoint : MonoBehaviour
 {
+    private bool StopTrigger;
     private void OnTriggerEnter(Collider other)
     {
+        if(StopTrigger)
+            return;
+        
         if (other.GetComponent<MovementOnTunnel>())
         {
-           MovementOnTunnel.movementOnTunnelBehaviour.indexOfCenterPoint++;
+            StopTrigger = true;
+            MovementOnTunnel.movementOnTunnelBehaviour.indexOfCenterPoint++;
         }
     }
 }

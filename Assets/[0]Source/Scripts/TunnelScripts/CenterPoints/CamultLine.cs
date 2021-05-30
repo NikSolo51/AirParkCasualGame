@@ -8,19 +8,25 @@ using UnityEngine;
 [BurstCompile]
 public class CamultLine : MonoBehaviour
 {
-    public GameObject[] Points = new GameObject[4];
-    public int CurveResolution = 20;
-    public static Vector3[] CurveCoordinates;
-    public Vector3[] Tangents;
-    public bool ClosedLoop = false;
-    public static List<GameObject> LinePoints = new List<GameObject>();
-    private static bool genPointExecute = false;
-    public GameObject parent;
-    public static GameObject parentobj;
-    public bool renderCube = false;
-    public static bool renderCubeStatic;
-    public bool renderLine = false;
+    public List<GameObject> linePoints = new List<GameObject>();
+    public Vector3[] curveCoordinates;
     
+    [SerializeField] CalculatePoint _calculatePoint;
+    
+    [SerializeField] private GameObject parent;
+    [SerializeField] private GameObject centerPointPrefab;
+    [SerializeField] private int curveResolution = 20;
+    
+    [SerializeField] private bool closedLoop = false;
+    [SerializeField] private bool renderCube = false;
+    [SerializeField] private bool renderCubeStatic;
+    [SerializeField] private bool renderLine = false;
+    
+    
+    private GameObject[] points = new GameObject[4];
+    private Vector3[] Tangents;
+    private bool genPointExecute = false;
+
 
     public enum Uniformity
     {
@@ -31,13 +37,18 @@ public class CamultLine : MonoBehaviour
 
     private void Start()
     {
+        StartCoroutine("Calculate");
+    }
+
+    IEnumerator Calculate()
+    {
+        yield return new WaitForSeconds(0.1f);
         renderCubeStatic = renderCube;
-        parentobj = parent;
-        Points = CalculatePoint.points.ToArray();
+        points = _calculatePoint.points.ToArray();
+
         CalculateCamultLine();
     }
 
-   
 
     public static Vector3 Interpolate(Vector3 start, Vector3 end, Vector3 tanPoint1, Vector3 tanPoint2, float t)
     {
@@ -48,34 +59,35 @@ public class CamultLine : MonoBehaviour
         // Tangent M[k] = (P[k+1] - P[k-1]) / 2
         // With [] indicating subscript
         Vector3 position = (2.0f * t * t * t - 3.0f * t * t + 1.0f) * start
-            + (t * t * t - 2.0f * t * t + t) * tanPoint1
-            + (-2.0f * t * t * t + 3.0f * t * t) * end
-            + (t * t * t - t * t) * tanPoint2;
+                           + (t * t * t - 2.0f * t * t + t) * tanPoint1
+                           + (-2.0f * t * t * t + 3.0f * t * t) * end
+                           + (t * t * t - t * t) * tanPoint2;
 
         return position;
     }
 
-    public static Vector3 Interpolate(Vector3 start, Vector3 end, Vector3 tanPoint1, Vector3 tanPoint2, float t, out Vector3 tangent)
+    public static Vector3 Interpolate(Vector3 start, Vector3 end, Vector3 tanPoint1, Vector3 tanPoint2, float t,
+        out Vector3 tangent)
     {
         // Calculate tangents
         // p'(t) = (6t² - 6t)p0 + (3t² - 4t + 1)m0 + (-6t² + 6t)p1 + (3t² - 2t)m1
         tangent = (6 * t * t - 6 * t) * start
-            + (3 * t * t - 4 * t + 1) * tanPoint1
-            + (-6 * t * t + 6 * t) * end
-            + (3 * t * t - 2 * t) * tanPoint2;
+                  + (3 * t * t - 4 * t + 1) * tanPoint1
+                  + (-6 * t * t + 6 * t) * end
+                  + (3 * t * t - 2 * t) * tanPoint2;
         return Interpolate(start, end, tanPoint1, tanPoint2, t);
     }
 
-    public static Vector3 Interpolate(Vector3 start, Vector3 end, Vector3 tanPoint1, Vector3 tanPoint2, float t, out Vector3 tangent, out Vector3 curvature)
+    public static Vector3 Interpolate(Vector3 start, Vector3 end, Vector3 tanPoint1, Vector3 tanPoint2, float t,
+        out Vector3 tangent, out Vector3 curvature)
     {
         // Calculate second derivative (curvature)
         // p''(t) = (12t - 6)p0 + (6t - 4)m0 + (-12t + 6)p1 + (6t - 2)m1
         curvature = (12 * t - 6) * start
-            + (6 * t - 4) * tanPoint1
-            + (-12 * t + 6) * end
-            + (6 * t - 2) * tanPoint2;
+                    + (6 * t - 4) * tanPoint1
+                    + (-12 * t + 6) * end
+                    + (6 * t - 2) * tanPoint2;
         return Interpolate(start, end, tanPoint1, tanPoint2, t, out tangent);
-
     }
 
     public static float[] GetNonuniformT(Vector3 p0, Vector3 p1, Vector3 p2, Vector3 p3, float alpha)
@@ -93,7 +105,6 @@ public class CamultLine : MonoBehaviour
         return values;
     }
 
-    
 
     void CalculateCamultLine()
     {
@@ -103,29 +114,34 @@ public class CamultLine : MonoBehaviour
         Vector3 m1;
         int pointsToMake;
 
-        if (ClosedLoop == true)
+
+        if (closedLoop == true)
         {
-            pointsToMake = (CurveResolution) * (Points.Length);
+            pointsToMake = (curveResolution) * (points.Length);
         }
         else
         {
-            pointsToMake = (CurveResolution) * (Points.Length - 1);
+            pointsToMake = (curveResolution) * (points.Length - 1);
         }
-        CurveCoordinates = new Vector3[pointsToMake];
+
+        curveCoordinates = new Vector3[pointsToMake];
+        Debug.Log(curveCoordinates);
         Tangents = new Vector3[pointsToMake];
 
-        int closedAdjustment = ClosedLoop ? 0 : 1;
+        int closedAdjustment = closedLoop ? 0 : 1;
 
         // First for loop goes through each individual control point and connects it to the next, so 0-1, 1-2, 2-3 and so on
-        for (int i = 0; i < Points.Length - closedAdjustment; i++)
+        for (int i = 0; i < points.Length - closedAdjustment; i++)
         {
-            //if (Points[i] == null || Points[i + 1] == null || (i > 0 && Points[i - 1] == null) || (i < Points.Length - 2 && Points[i + 2] == null))
+            //if (points[i] == null || points[i + 1] == null || (i > 0 && points[i - 1] == null) || (i < points.Length - 2 && points[i + 2] == null))
             //{
             //    return;
             //}
 
-            p0 = Points[i].transform.position;
-            p1 = (ClosedLoop == true && i == Points.Length - 1) ? Points[0].transform.position : Points[i + 1].transform.position;
+            p0 = points[i].transform.position;
+            p1 = (closedLoop == true && i == points.Length - 1)
+                ? points[0].transform.position
+                : points[i + 1].transform.position;
 
             // Tangent calculation for each control point
             // Tangent M[k] = (P[k+1] - P[k-1]) / 2
@@ -134,34 +150,34 @@ public class CamultLine : MonoBehaviour
             // m0
             if (i == 0)
             {
-                m0 = ClosedLoop ? 0.5f * (p1 - Points[Points.Length - 1].transform.position) : p1 - p0;
+                m0 = closedLoop ? 0.5f * (p1 - points[points.Length - 1].transform.position) : p1 - p0;
             }
             else
             {
-                m0 = 0.5f * (p1 - Points[i - 1].transform.position);
+                m0 = 0.5f * (p1 - points[i - 1].transform.position);
             }
 
             // m1
-            if (ClosedLoop)
+            if (closedLoop)
             {
-                if (i == Points.Length - 1)
+                if (i == points.Length - 1)
                 {
-                    m1 = 0.5f * (Points[(i + 2) % Points.Length].transform.position - p0);
+                    m1 = 0.5f * (points[(i + 2) % points.Length].transform.position - p0);
                 }
                 else if (i == 0)
                 {
-                    m1 = 0.5f * (Points[i + 2].transform.position - p0);
+                    m1 = 0.5f * (points[i + 2].transform.position - p0);
                 }
                 else
                 {
-                    m1 = 0.5f * (Points[(i + 2) % Points.Length].transform.position - p0);
+                    m1 = 0.5f * (points[(i + 2) % points.Length].transform.position - p0);
                 }
             }
             else
             {
-                if (i < Points.Length - 2)
+                if (i < points.Length - 2)
                 {
-                    m1 = 0.5f * (Points[(i + 2) % Points.Length].transform.position - p0);
+                    m1 = 0.5f * (points[(i + 2) % points.Length].transform.position - p0);
                 }
                 else
                 {
@@ -171,75 +187,67 @@ public class CamultLine : MonoBehaviour
 
             Vector3 position;
             float t;
-            float pointStep = 1.0f / CurveResolution;
+            float pointstep = 1.0f / curveResolution;
 
-            if ((i == Points.Length - 2 && ClosedLoop == false) || (i == Points.Length - 1 && ClosedLoop))
+            if ((i == points.Length - 2 && closedLoop == false) || (i == points.Length - 1 && closedLoop))
             {
-                pointStep = 1.0f / (CurveResolution - 1);
+                pointstep = 1.0f / (curveResolution - 1);
                 // last point of last segment should reach p1
             }
+
             // Second for loop actually creates the spline for this particular segment
-            for (int j = 0; j < CurveResolution; j++)
+            for (int j = 0; j < curveResolution; j++)
             {
-                t = j * pointStep;
+                t = j * pointstep;
                 Vector3 tangent;
                 position = Interpolate(p0, p1, m0, m1, t, out tangent);
-                CurveCoordinates[i * CurveResolution + j] = position;
-                Tangents[i * CurveResolution + j] = tangent;
+                curveCoordinates[i * curveResolution + j] = position;
+                Tangents[i * curveResolution + j] = tangent;
                 //Debug.DrawRay(position, tangent.normalized * 2, Color.red);
-                if(renderLine == true)
-                Debug.DrawLine(position + Vector3.Cross(tangent, Vector3.up).normalized, position - Vector3.Cross(tangent, Vector3.up).normalized, Color.red);
+                if (renderLine == true)
+                    Debug.DrawLine(position + Vector3.Cross(tangent, Vector3.up).normalized,
+                        position - Vector3.Cross(tangent, Vector3.up).normalized, Color.red);
             }
         }
 
-        for (int i = 0; i < CurveCoordinates.Length - 1; ++i)
+        for (int i = 0; i < curveCoordinates.Length - 1; ++i)
         {
-            if(renderLine == true)
-            Debug.DrawLine(CurveCoordinates[i], CurveCoordinates[i + 1]);
+            if (renderLine == true)
+                Debug.DrawLine(curveCoordinates[i], curveCoordinates[i + 1]);
         }
-        
+
         if (genPointExecute == false)
-        GeneratePoints();
-
-
-
+            GeneratePoints();
     }
 
-    public static  void GeneratePoints()
+    public void GeneratePoints()
     {
-        
-        for (int i = 0; i < CurveCoordinates.Length; i++)
+        for (int i = 0; i < curveCoordinates.Length; i++)
         {
-            GameObject centerPoint = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            centerPoint.transform.SetParent(parentobj.transform);
-            centerPoint.name = " center point " + i ;
-            //centerPoint.GetComponent<BoxCollider>().size = new Vector3(1 ,11,7 );
+            GameObject centerPoint = Instantiate(centerPointPrefab, curveCoordinates[i], Quaternion.identity,
+                parent.transform);
+            centerPoint.name = " center point " + i;
             centerPoint.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
-            centerPoint.AddComponent<PlayerCheckPoint>();
             centerPoint.GetComponent<MeshRenderer>().enabled = renderCubeStatic;
-            centerPoint.transform.position = CurveCoordinates[i];
             centerPoint.GetComponent<BoxCollider>().isTrigger = true;
-           
-            LinePoints.Add(centerPoint);
+
+            linePoints.Add(centerPoint);
         }
 
         genPointExecute = true;
-
-
-
     }
+
     void OnDrawGizmos()
     {
-        if(CurveCoordinates == null )
+        if (curveCoordinates == null)
             return;
-        if(renderLine == true)
+        if (renderLine == true)
         {
             Gizmos.color = Color.green;
-            for (int i = 0; i < CurveCoordinates.Length; i++)
+            for (int i = 0; i < curveCoordinates.Length; i++)
             {
-                Gizmos.DrawWireCube(CurveCoordinates[i], new Vector3(.1f, .1f, .1f));
+                Gizmos.DrawWireCube(curveCoordinates[i], new Vector3(.1f, .1f, .1f));
             }
         }
-        
     }
 }
