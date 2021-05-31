@@ -6,17 +6,17 @@ using UnityEngine;
 [DisallowMultipleComponent]
 public class AddPeoplesToLinkList : MonoBehaviour
 {
-    [SerializeField]private int id;
+    [SerializeField] private ControlPeople _controlPeople;
+    [SerializeField] private int id;
+
     private void Start()
     {
         id = transform.GetSiblingIndex();
-        ControlPeople.ControlPeopleBehaviour.PeopleDictionaryAdd(id,transform);
-       ControlPeople.ControlPeopleBehaviour.localPeoplePosition.Add(transform.localPosition);
-           //yep x2 it is correct
-        ControlPeople.ControlPeopleBehaviour.InitializingTheUsedPeopleDictionarySheet();
-        ControlPeople.ControlPeopleBehaviour.InitializingTheUsedPeopleDictionarySheet();
+        _controlPeople.controlPeopleBehaviour.PeopleDictionaryAdd(id, transform);
+        //yep x2 it is correct
+        _controlPeople.controlPeopleBehaviour.InitializingTheUsedPeopleDictionarySheet();
+        _controlPeople.controlPeopleBehaviour.InitializingTheUsedPeopleDictionarySheet();
         //Debug.Log(ControlPeople.controlPeopleBehaviour.ListOfDictionariesOfPointsAndPeople.Count);
         //ControlPeople.controlPeopleBehaviour.LinkList.Add(transform);
-
     }
 }

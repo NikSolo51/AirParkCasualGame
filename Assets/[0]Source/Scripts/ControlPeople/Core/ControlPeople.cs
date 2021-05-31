@@ -11,33 +11,43 @@ using UnityEngine.UI;
 [BurstCompile]
 public class ControlPeople : MonoBehaviour
 {
-    public static ControlPeople Instance;
-    public static readonly ControlPeopleBehaviour ControlPeopleBehaviour = new ControlPeopleBehaviour();
-    public static readonly MovePeopleToPointInDictionary MovePeopleToPointInDictionary = new MovePeopleToPointInDictionary();
-    public Clearing Clearing = new Clearing();
-    public float TimeToClear = 1;
-    public List<Transform> debug = new List<Transform>();
-    
+    public readonly ControlPeopleBehaviour controlPeopleBehaviour = new ControlPeopleBehaviour();
+    public readonly MovePeopleToPointInDictionary movePeopleToPointInDictionary = new MovePeopleToPointInDictionary();
+
+    [SerializeField] private CreatePointsAtMousePosition _createPointsAtMousePosition;
+
+    public float timeToClear = 0.1f;
+
+    private Clearing clearing;
+
+    private void Start()
+    {
+        clearing = new Clearing();
+        clearing.controlPeople = this;
+        clearing._createPointsAtMousePosition = _createPointsAtMousePosition;
+        controlPeopleBehaviour._controlPeople = this;
+        controlPeopleBehaviour._createPointsAtMousePosition = _createPointsAtMousePosition;
+    }
+
     private void Update()
     {
-        
-        MovePeopleToPointInDictionary.MoveToPoint();
-        debug = ControlPeopleBehaviour.peopleDictionary.Values.ToList();
+        movePeopleToPointInDictionary.MoveToPoint();
         if (Input.GetMouseButtonUp(0))
         {
-            if (CreatePointsAtMousePosition.Instance.CanICreatePointInThisPlace())
+            if (_createPointsAtMousePosition.CanICreatePointInThisPlace())
             {
-                Clearing.Instance.AddToClear(ControlPeopleBehaviour.ListOfDictionariesOfPointsAndPeople[ControlPeopleBehaviour.queue], TimeToClear);
-                
-                MovePeopleToPointInDictionary.AddPointForMoveToPoint(
-                    ControlPeople.ControlPeopleBehaviour.ListOfDictionariesOfPointsAndPeople[ControlPeopleBehaviour.queue]);
-                
-                ControlPeople.ControlPeopleBehaviour.IncrementQueue();
-                ControlPeople.ControlPeopleBehaviour.ClearIfQueueEqualsZero();
+                clearing.AddToClear(
+                    controlPeopleBehaviour.ListOfDictionariesOfPointsAndPeople[controlPeopleBehaviour.queue],
+                    timeToClear);
+
+                movePeopleToPointInDictionary.AddPointForMoveToPoint(
+                    controlPeopleBehaviour.ListOfDictionariesOfPointsAndPeople[controlPeopleBehaviour.queue]);
+
+                controlPeopleBehaviour.IncrementQueue();
+                controlPeopleBehaviour.ClearIfQueueEqualsZero();
             }
         }
 
-        Clearing.Instance.Tick();
+        clearing.Tick();
     }
-    
 }

@@ -2,20 +2,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MovePeopleToPointInDictionary 
+public class MovePeopleToPointInDictionary
 {
-    public  List<Dictionary<Transform, Vector3>> DictionaryList = new List<Dictionary<Transform, Vector3>>();
-    
-    public void AddPointForMoveToPoint(Dictionary<Transform,Vector3> dictionary)
+    public List<Dictionary<Transform, Vector3>> DictionaryList = new List<Dictionary<Transform, Vector3>>();
+
+    public void AddPointForMoveToPoint(Dictionary<Transform, Vector3> dictionary)
     {
         DictionaryList.Add(dictionary);
     }
 
-    public void MoveToPoint() 
+    public void MoveToPoint()
     {
         foreach (var dic in DictionaryList)
         {
-            
             foreach (var usedPeoples in dic)
             {
                 if (usedPeoples.Key.localPosition != usedPeoples.Value)
@@ -40,6 +39,7 @@ public class MovePeopleToPointInDictionary
                 }
             }
         }
+
         return true;
     }
 }

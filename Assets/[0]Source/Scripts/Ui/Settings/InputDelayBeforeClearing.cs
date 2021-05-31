@@ -21,7 +21,7 @@ public class InputDelayBeforeClearing : MonoBehaviour
     {
         if (float.TryParse(inputField.text, out value))
             value = float.Parse(inputField.text);
-        _controlPeople.TimeToClear = value;
+        _controlPeople.timeToClear = value;
     }
     
 }

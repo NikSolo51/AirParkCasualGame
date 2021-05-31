@@ -5,7 +5,8 @@ using UnityEngine;
 
 public class Clearing : MonoBehaviour
 {
-      public static Clearing Instance = new Clearing();
+    public ControlPeople controlPeople;
+    public CreatePointsAtMousePosition _createPointsAtMousePosition;
     private readonly List<Dictionary<Transform, Vector3>> DictionaryList = new List<Dictionary<Transform, Vector3>>();
     private readonly List<float> TimerList = new List<float>();
 
@@ -20,14 +21,14 @@ public class Clearing : MonoBehaviour
             return;
         if (dic.Keys.Count == 0)
             return;
-        
+
         DictionaryList.Add(dic);
         TimerList.Add(timeToDelete);
     }
-    
-     private void Clear()
+
+    private void Clear()
     {
-        if (!ControlPeople.MovePeopleToPointInDictionary.HaveAllPeopleReachedThePoints())
+        if (!controlPeople.movePeopleToPointInDictionary.HaveAllPeopleReachedThePoints())
             return;
 
         if (Input.GetMouseButton(0))
@@ -47,10 +48,10 @@ public class Clearing : MonoBehaviour
                 if (TimerList[i] <= 0)
                 {
                     RemovingPointsFromTheCoordinateSheetIfTheyAreFoundInTheDictionary(i);
-                    
+
                     RemovingVisualizationSpheresIfTheyAreFoundInTheDictionary(i);
 
-                    ControlPeople.MovePeopleToPointInDictionary.DictionaryList.RemoveAt(i);
+                    controlPeople.movePeopleToPointInDictionary.DictionaryList.RemoveAt(i);
                     DictionaryList[i].Clear();
                     TimerList.RemoveAt(i);
                     DictionaryList.RemoveAt(i);
@@ -59,37 +60,37 @@ public class Clearing : MonoBehaviour
         }
     }
 
-     private void RemovingPointsFromTheCoordinateSheetIfTheyAreFoundInTheDictionary(int i)
-     {
-         for (int j = 0; j < CreatePointsAtMousePosition.Instance.coordinatesList.Count; j++)
-         {
-             foreach (var dic in DictionaryList.ElementAt(i))
-             {
-                 if (CreatePointsAtMousePosition.Instance.coordinatesList.Count != 0)
+    private void RemovingPointsFromTheCoordinateSheetIfTheyAreFoundInTheDictionary(int i)
+    {
+        for (int j = 0; j < _createPointsAtMousePosition.coordinatesList.Count; j++)
+        {
+            foreach (var dic in DictionaryList.ElementAt(i))
+            {
+                if (_createPointsAtMousePosition.coordinatesList.Count != 0)
 
-                     if (dic.Value == CreatePointsAtMousePosition.Instance.coordinatesList[j])
-                     {
-                         CreatePointsAtMousePosition.Instance.coordinatesList.RemoveAt(j);
-                     }
-             }
-         }
-     }
+                    if (dic.Value == _createPointsAtMousePosition.coordinatesList[j])
+                    {
+                        _createPointsAtMousePosition.coordinatesList.RemoveAt(j);
+                    }
+            }
+        }
+    }
 
-     private void RemovingVisualizationSpheresIfTheyAreFoundInTheDictionary(int i)
-     {
-         for (int j = 0; j < CreatePointsAtMousePosition.Instance.debugObjects.Count; j++)
-         {
-             foreach (var dic in DictionaryList.ElementAt(i))
-             {
-                 if (CreatePointsAtMousePosition.Instance.debugObjects.Count != 0)
+    private void RemovingVisualizationSpheresIfTheyAreFoundInTheDictionary(int i)
+    {
+        for (int j = 0; j < _createPointsAtMousePosition.debugObjects.Count; j++)
+        {
+            foreach (var dic in DictionaryList.ElementAt(i))
+            {
+                if (_createPointsAtMousePosition.debugObjects.Count != 0)
 
-                     if (dic.Value.Equals(CreatePointsAtMousePosition.Instance.debugObjects[j].transform
-                         .localPosition))
-                     {
-                         Destroy(CreatePointsAtMousePosition.Instance.debugObjects[j]);
-                         CreatePointsAtMousePosition.Instance.debugObjects.RemoveAt(j);
-                     }
-             }
-         }
-     }
+                    if (dic.Value.Equals(_createPointsAtMousePosition.debugObjects[j].transform
+                        .localPosition))
+                    {
+                        Destroy(_createPointsAtMousePosition.debugObjects[j]);
+                        _createPointsAtMousePosition.debugObjects.RemoveAt(j);
+                    }
+            }
+        }
+    }
 }
