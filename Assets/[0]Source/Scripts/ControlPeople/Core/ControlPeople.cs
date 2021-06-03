@@ -21,12 +21,12 @@ public class ControlPeople : MonoBehaviour
     public float timeToClear = 0.1f;
     public readonly ControlPeopleBehaviour controlPeopleBehaviour = new ControlPeopleBehaviour();
     public readonly MovePeopleToPointInDictionary movePeopleToPointInDictionary = new MovePeopleToPointInDictionary();
+    //************************
     public TransformVectors[] ListOfDictionariesPointsAndPeopleInspector = new TransformVectors[10];
+    //************************
     [SerializeField] private CreatePointsAtMousePosition _createPointsAtMousePosition;
     [SerializeField] private Clearing clearing;
     
-    
-
     private void Start()
     {
         controlPeopleBehaviour._controlPeople = this;
@@ -39,19 +39,9 @@ public class ControlPeople : MonoBehaviour
 
     private void Update()
     {
-
+        DebugDictories();
         controlPeopleBehaviour.CheckPeopleTransformList();
         
-        for (int i = 0; i < controlPeopleBehaviour.ListOfDictionariesPointsAndPeople.Count; i++)
-        {
-            ListOfDictionariesPointsAndPeopleInspector[i].transformsList
-                = controlPeopleBehaviour.ListOfDictionariesPointsAndPeople[i].Select(kvp => kvp.Key)
-                    .ToList();
-        
-            ListOfDictionariesPointsAndPeopleInspector[i].vectorsList
-                = controlPeopleBehaviour.ListOfDictionariesPointsAndPeople[i].Select(kvp => kvp.Value)
-                    .ToList();
-        }
         
         movePeopleToPointInDictionary.MoveToPoint();
         
@@ -74,5 +64,20 @@ public class ControlPeople : MonoBehaviour
         }
 
         clearing.Tick();
+    }
+
+    public void DebugDictories()
+    {
+        for (int i = 0; i < controlPeopleBehaviour.ListOfDictionariesPointsAndPeople.Count; i++)
+        {
+            ListOfDictionariesPointsAndPeopleInspector[i].transformsList
+                = controlPeopleBehaviour.ListOfDictionariesPointsAndPeople[i].Select(kvp => kvp.Key)
+                    .ToList();
+        
+            ListOfDictionariesPointsAndPeopleInspector[i].vectorsList
+                = controlPeopleBehaviour.ListOfDictionariesPointsAndPeople[i].Select(kvp => kvp.Value)
+                    .ToList();
+        }
+
     }
 }

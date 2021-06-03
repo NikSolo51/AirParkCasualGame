@@ -39,6 +39,6 @@ public class MovementOnTunnel : MonoBehaviour
     public void StartGame()
     {
         _camultLine.GeneratePoints();
-        movementOnTunnelBehaviour.Move(transform, _camultLine.linePoints, _smoothRotation);
+        movementOnTunnelBehaviour.Initialize(transform, _camultLine.linePoints, _smoothRotation);
     }
 }

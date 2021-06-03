@@ -14,7 +14,7 @@ public class MovementOnTunnelBehaviour : MonoBehaviour
     public int indexOfCenterPoint;
     private SmoothRotation smoothRotation;
 
-    public void Move(Transform player, List<GameObject> centersPoints, SmoothRotation _smoothRotation)
+    public void Initialize(Transform player, List<GameObject> centersPoints, SmoothRotation _smoothRotation)
     {
         this.player = player;
         this.centers = centersPoints;
@@ -25,7 +25,7 @@ public class MovementOnTunnelBehaviour : MonoBehaviour
     {
         if (MovementOnTunnel.stopGame)
             return;
-
+        
         if (centers != null && player != null && centers.Count > 0)
         {
             if (Vector3.Distance(player.transform.position, centers[indexOfCenterPoint].transform.position) < 0.3f)
@@ -40,10 +40,10 @@ public class MovementOnTunnelBehaviour : MonoBehaviour
                         Vector3.MoveTowards(player.transform.position, _camultLine.curveCoordinates[indexOfCenterPoint],
                             1f * speed);
 
-                    if (indexOfCenterPoint + 1 < centers.Count)
+                    if (indexOfCenterPoint + 1 < centers.Count/2)
                         smoothRotation.Smooth(player.transform, centers[indexOfCenterPoint + 1].transform, 0.1f);
                     else
-                        smoothRotation.Smooth(player.transform, centers[indexOfCenterPoint].transform, 0.5f);
+                        player.transform.rotation = new Quaternion(0,0,0,0);
                 }
             }
         }

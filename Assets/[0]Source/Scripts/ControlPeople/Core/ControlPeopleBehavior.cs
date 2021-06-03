@@ -57,8 +57,7 @@ public class ControlPeopleBehaviour : MonoBehaviour
 
         return orderedKeyValuePairs.ToDictionary((keyItem) => keyItem.Key, (valueItem) => valueItem.Value);
     }
-
-    public int GetPeopleDictionaryCount() => peopleDictionary.Count;
+    
 
     public int GetClosestPersonById(List<Transform> peopleList, Vector2 point)
     {

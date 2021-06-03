@@ -1,9 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Skin : MonoBehaviour
 {
+    public Text priceText;
     public int price;
     public int id;
     private bool purchased;
@@ -18,6 +20,7 @@ public class Skin : MonoBehaviour
             Debug.Log("hello");
             CoinManager.coins -= price;
             purchased = true;
+            priceText.gameObject.SetActive(false);
         }
         else
         {
