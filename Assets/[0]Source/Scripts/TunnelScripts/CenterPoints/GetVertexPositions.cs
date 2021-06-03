@@ -8,9 +8,10 @@ using Unity.Burst;
 [BurstCompile]
 public class GetVertexPositions : MonoBehaviour
 {
-    private Mesh mesh;
+    public VertexManager VertexManager;
     public List<Vector3> vertexList = new List<Vector3>();
-    public static Dictionary<int, List<Vector3>> vertexListByIdDictionary = new Dictionary<int, List<Vector3>>();
+    private Mesh mesh;
+   
 
     private int id;
 
@@ -23,15 +24,15 @@ public class GetVertexPositions : MonoBehaviour
 
         TransformVertexLocalPositionToWorld();
 
-        vertexListByIdDictionary.Add(id, vertexList);
+        VertexManager.vertexListByIdDictionary.Add(id, vertexList);
         
         SortDictionary();
     }
 
     public void SortDictionary()
     {
-        var orderedKeyValuePairs = vertexListByIdDictionary.OrderBy(key => key.Key);
-        vertexListByIdDictionary =
+        var orderedKeyValuePairs = VertexManager.vertexListByIdDictionary.OrderBy(key => key.Key);
+        VertexManager.vertexListByIdDictionary =
             orderedKeyValuePairs.ToDictionary((keyItem) => keyItem.Key, (valueItem) => valueItem.Value);
     }
 

@@ -8,8 +8,7 @@ public class PlayerCheckPoint : MonoBehaviour
     private bool StopTrigger;
     private void OnTriggerEnter(Collider other)
     {
-        if(StopTrigger)
-            return;
+        return;
         
         if (other.GetComponent<MovementOnTunnel>())
         {

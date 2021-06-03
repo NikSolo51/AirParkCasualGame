@@ -12,9 +12,9 @@ using UnityEngine.UIElements;
 [BurstCompile]
 public class CreatePointsAtMousePosition : MonoBehaviour
 {
-    [HideInInspector] public List<Vector3> coordinatesList = new List<Vector3>();
+    public List<Vector3> existingPointsList = new List<Vector3>();
     [HideInInspector] public List<GameObject> debugObjects = new List<GameObject>();
-    [HideInInspector] public Vector3 localValueCoord;
+    [HideInInspector] public Vector3 newPoint;
     [HideInInspector] public Vector3 coord;
 
 
@@ -27,13 +27,27 @@ public class CreatePointsAtMousePosition : MonoBehaviour
     private Transform OriginSystem;
 
     [Header("[Minimum distance between two points]")] [SerializeField]
-    private float minOffset = 0.5f;
-
-    [SerializeField] private float different = 1f;
-
+    private float minOffset = 1f;
 
     private readonly List<Vector3> listOfAllPoints = new List<Vector3>();
-    
+
+    public bool CanICreatePointInThisPlace()
+    {
+        if (existingPointsList.Count != 0)
+        {
+            if (listOfAllPoints.Count > 0)
+            {
+                if (IsThereADifferenceBetweenTheTwoPoints(existingPointsList.GetRange(0, existingPointsList.Count - 1),
+                    coord, minOffset))
+                {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
     public void Update()
     {
         if (Input.GetMouseButton(0))
@@ -42,66 +56,57 @@ public class CreatePointsAtMousePosition : MonoBehaviour
         }
     }
 
-
     private void Generate()
     {
         //Get Coordinates  mouse position in local space
-        localValueCoord = CalculateLocalPointOnScreen(OriginSystem, 2);
+        newPoint = GetPointOnScreen(OriginSystem, 2);
 
-
-        //Check does it contain an already existing point pointsList
-        //and checks if there is a minimum distance between two points 
+        //Check if list of all points contains new point
+        //and checks if there is a minimum distance between new point and closest point in CoordinateList
         if (listOfAllPoints.Count > 0)
         {
-            if (IsTheCoordinateInTheList(listOfAllPoints, localValueCoord) ||
-                IsThereADifferenceInDistanceBetweenTwoPoints(listOfAllPoints, localValueCoord))
+            if (listOfAllPoints.Contains(newPoint) ||
+                IsThereADifferenceInDistanceBetweenTwoPoints(listOfAllPoints, newPoint, minOffset))
                 return;
         }
 
-        if (!IsThereADifferenceBetweenTheTwoPoints(coordinatesList, localValueCoord, different))
+
+        // check if there a minimum distance between new point and closest existingPoint in existingPointsList
+        if (!IsThereADifferenceBetweenTheTwoPoints(existingPointsList, newPoint, minOffset))
             return;
 
+        listOfAllPoints.Add(newPoint);
 
-        listOfAllPoints.Add(localValueCoord);
 
-
-        if (coordinatesList.Count < _controlPeople.controlPeopleBehaviour.GetPeopleDictionaryCount())
+        if (existingPointsList.Count < _controlPeople.controlPeopleBehaviour.peopleTransformsList.Count)
         {
-            coordinatesList.Add(localValueCoord);
-            _controlPeople.controlPeopleBehaviour.ChooseTheNearestPerson();
-        }
-        else
-        {
-            _controlPeople.controlPeopleBehaviour.ChooseTheNearestPerson();
+            existingPointsList.Add(newPoint);
         }
 
-        if (debugObjects.Count >= coordinatesList.Count)
-            return;
-        GameObject point = PointVisualization(debugPrefab, OriginSystem, localValueCoord, Vector3.one / 2);
-        debugObjects.Add(point);
+        //choose closest person for new point
+        _controlPeople.controlPeopleBehaviour.ChooseTheNearestPerson();
+
+        //Draw debug objects
+        if (debugObjects.Count < existingPointsList.Count)
+        {
+            GameObject point = PointVisualization(debugPrefab, OriginSystem, newPoint, Vector3.one / 2);
+            debugObjects.Add(point);
+        }
     }
 
-    public Vector3 CalculateLocalPointOnScreen(Transform Origin, float beamLength)
+    public Vector3 GetPointOnScreen(Transform Origin, float beamLength)
     {
         Ray mRay = Camera.main.ScreenPointToRay(Input.mousePosition);
+
         Vector3 coordinates = mRay.origin + (mRay.direction * 12f);
+
         coordinates = Origin.transform.InverseTransformPoint(coordinates);
         coordinates.z = beamLength;
         return coordinates;
     }
 
-    public bool IsTheCoordinateInTheList(List<Vector3> listCoordinates, Vector3 coordinate)
-    {
-        //if the coordinate is in the list of all points, then we skip it
-        if (listCoordinates.Contains(coordinate))
-        {
-            return true;
-        }
-
-        return false;
-    }
-
-    private bool IsThereADifferenceInDistanceBetweenTwoPoints(List<Vector3> listCoordinates, Vector3 coordinate)
+    private bool IsThereADifferenceInDistanceBetweenTwoPoints(List<Vector3> listCoordinates, Vector3 coordinate,
+        float minOffset)
     {
         //check if there is a minimum distance between two points 
         if (Vector3.Distance(coordinate, listCoordinates[listCoordinates.Count - 1]) <= minOffset)
@@ -112,8 +117,7 @@ public class CreatePointsAtMousePosition : MonoBehaviour
         return false;
     }
 
-
-    public bool IsThereADifferenceBetweenTheTwoPoints(List<Vector3> pointsList, Vector2 point, float allowedDifference)
+    public bool IsThereADifferenceBetweenTheTwoPoints(List<Vector3> pointsList, Vector2 point, float minOffset)
     {
         float distanceToClosestPoint = Mathf.Infinity;
         Vector3 closestPoint = Vector3.zero;
@@ -132,10 +136,10 @@ public class CreatePointsAtMousePosition : MonoBehaviour
             }
         }
 
-        Vector2 different = point - new Vector2(closestPoint.x, closestPoint.y);
-        
-        
-        if (Mathf.Abs(different.x) >= allowedDifference || Mathf.Abs(different.y) >= allowedDifference)
+        Vector2 difference = point - new Vector2(closestPoint.x, closestPoint.y);
+
+
+        if (Mathf.Abs(difference.x) >= minOffset || Mathf.Abs(difference.y) >= minOffset)
         {
             return true;
         }
@@ -150,23 +154,5 @@ public class CreatePointsAtMousePosition : MonoBehaviour
         point.transform.localPosition = coordinate;
         point.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
         return point;
-    }
-
-    public bool CanICreatePointInThisPlace()
-    {
-        if (coordinatesList.Count != 0)
-        {
-            if (listOfAllPoints.Count > 0)
-            {
-                // есть ли разница в n метров между точками?
-                if (IsThereADifferenceBetweenTheTwoPoints(coordinatesList.GetRange(0, coordinatesList.Count - 1),
-                    coord, different))
-                {
-                    return true;
-                }
-            }
-        }
-
-        return false;
     }
 }

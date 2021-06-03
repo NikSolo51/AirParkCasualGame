@@ -1,7 +1,10 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+
+[System.Serializable]
 
 public class Clearing : MonoBehaviour
 {
@@ -50,8 +53,8 @@ public class Clearing : MonoBehaviour
                     RemovingPointsFromTheCoordinateSheetIfTheyAreFoundInTheDictionary(i);
 
                     RemovingVisualizationSpheresIfTheyAreFoundInTheDictionary(i);
-
-                    controlPeople.movePeopleToPointInDictionary.DictionaryList.RemoveAt(i);
+                    
+                    //controlPeople.movePeopleToPointInDictionary.PeopleAndPointsList.RemoveAt(i);
                     DictionaryList[i].Clear();
                     TimerList.RemoveAt(i);
                     DictionaryList.RemoveAt(i);
@@ -62,15 +65,15 @@ public class Clearing : MonoBehaviour
 
     private void RemovingPointsFromTheCoordinateSheetIfTheyAreFoundInTheDictionary(int i)
     {
-        for (int j = 0; j < _createPointsAtMousePosition.coordinatesList.Count; j++)
+        for (int j = 0; j < _createPointsAtMousePosition.existingPointsList.Count; j++)
         {
             foreach (var dic in DictionaryList.ElementAt(i))
             {
-                if (_createPointsAtMousePosition.coordinatesList.Count != 0)
+                if (_createPointsAtMousePosition.existingPointsList.Count != 0)
 
-                    if (dic.Value == _createPointsAtMousePosition.coordinatesList[j])
+                    if (dic.Value == _createPointsAtMousePosition.existingPointsList[j])
                     {
-                        _createPointsAtMousePosition.coordinatesList.RemoveAt(j);
+                        _createPointsAtMousePosition.existingPointsList.RemoveAt(j);
                     }
             }
         }

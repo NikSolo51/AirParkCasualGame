@@ -19,25 +19,25 @@ public class Obstacle : MonoBehaviour
                     _controlPeople.controlPeopleBehaviour.peopleDictionary.Remove(i);
             }
 
-            for (int i = _controlPeople.controlPeopleBehaviour.ListOfDictionariesOfPointsAndPeople.Count - 1;
+            for (int i = _controlPeople.controlPeopleBehaviour.ListOfDictionariesPointsAndPeople.Count - 1;
                 i >= 0;
                 i--)
             {
-                for (int j = _controlPeople.controlPeopleBehaviour.ListOfDictionariesOfPointsAndPeople[i].Keys.Count - 1;
+                for (int j = _controlPeople.controlPeopleBehaviour.ListOfDictionariesPointsAndPeople[i].Keys.Count - 1;
                     j >= 0;
                     j--)
                 {
-                    if (_controlPeople.controlPeopleBehaviour.ListOfDictionariesOfPointsAndPeople[i].ElementAt(j).Key ==
+                    if (_controlPeople.controlPeopleBehaviour.ListOfDictionariesPointsAndPeople[i].ElementAt(j).Key ==
                         other.transform)
-                        _controlPeople.controlPeopleBehaviour.ListOfDictionariesOfPointsAndPeople[i].Remove(_controlPeople.controlPeopleBehaviour.ListOfDictionariesOfPointsAndPeople[i].ElementAt(j).Key);
+                        _controlPeople.controlPeopleBehaviour.ListOfDictionariesPointsAndPeople[i].Remove(_controlPeople.controlPeopleBehaviour.ListOfDictionariesPointsAndPeople[i].ElementAt(j).Key);
                 }
                 
             }
             
-            foreach (var link in _controlPeople.controlPeopleBehaviour.LinkList)
+            foreach (var link in _controlPeople.controlPeopleBehaviour.peopleTransformsList)
             {
                 if (other.transform == link.transform)
-                    _controlPeople.controlPeopleBehaviour.LinkList.Remove(other.transform);
+                    _controlPeople.controlPeopleBehaviour.peopleTransformsList.Remove(other.transform);
             }
         }
        

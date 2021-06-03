@@ -4,16 +4,25 @@ using UnityEngine;
 
 public class MovePeopleToPointInDictionary
 {
-    public List<Dictionary<Transform, Vector3>> DictionaryList = new List<Dictionary<Transform, Vector3>>();
-
+    public List<Dictionary<Transform, Vector3>> PeopleAndPointsList = new List<Dictionary<Transform, Vector3>>();
+    private int queue;
+    
     public void AddPointForMoveToPoint(Dictionary<Transform, Vector3> dictionary)
     {
-        DictionaryList.Add(dictionary);
+        PeopleAndPointsList[queue] = dictionary;
+        
+        queue++;
+        
+        if (queue >= PeopleAndPointsList.Count - 1)
+            queue = 0;
+        
     }
 
     public void MoveToPoint()
     {
-        foreach (var dic in DictionaryList)
+       
+        
+        foreach (var dic in PeopleAndPointsList)
         {
             foreach (var usedPeoples in dic)
             {
@@ -29,10 +38,12 @@ public class MovePeopleToPointInDictionary
 
     public bool HaveAllPeopleReachedThePoints()
     {
-        foreach (var dic in DictionaryList)
+        foreach (var dic in PeopleAndPointsList)
         {
             foreach (var usedPeoples in dic)
             {
+                if(!usedPeoples.Key)
+                    continue;
                 if (usedPeoples.Key.localPosition != usedPeoples.Value)
                 {
                     return false;

@@ -6,9 +6,12 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/[1]Content/Scenes/SampleScene.unity
-    guid: e9b89a9e7263dfb49a2f4b7a63f2eb13
-  - enabled: 0
-    path: Assets/Scenes/Low_Poly_Survival/Scenes/Showcase.unity
-    guid: 3e0abf75efe2ff54690cfab2e7de11bb
+    path: Assets/[1]Content/Scenes/Loc1.unity
+    guid: f7f4b5c2663974c45ae0aeccbec888d5
+  - enabled: 1
+    path: Assets/[1]Content/Scenes/Loc2.unity
+    guid: b9a8b8a17ac9cc845a835eeeb379f1bc
+  - enabled: 1
+    path: Assets/[1]Content/Scenes/Loc3.unity
+    guid: dff0b64349cb45743b178c519834bd22
   m_configObjects: {}

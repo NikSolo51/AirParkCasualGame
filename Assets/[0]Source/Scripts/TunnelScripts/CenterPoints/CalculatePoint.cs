@@ -2,19 +2,22 @@
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Burst;
+using Unity.Mathematics;
 using UnityEngine;
 
 [BurstCompile]
 public class CalculatePoint : MonoBehaviour
 {
-    [SerializeField] private GameObject parent;
-    [SerializeField] private List<Vector3> centerPoints = new List<Vector3>();
     public List<GameObject> points = new List<GameObject>();
+    [SerializeField] public VertexManager VertexManager;
+    [SerializeField] private GameObject parent;
+    [SerializeField] private GameObject centerPointPrefab;
+    [SerializeField] private List<Vector3> centerPoints = new List<Vector3>();
     [SerializeField] private bool renderBox = false;
 
     private void Start()
     {
-        CalculateCenterPointOfTunnel(GetVertexPositions.vertexListByIdDictionary);
+        CalculateCenterPointOfTunnel(VertexManager.vertexListByIdDictionary);
     }
 
       void CalculateCenterPointOfTunnel(Dictionary<int , List<Vector3>> vertexListByIdDictionary)
@@ -45,13 +48,9 @@ public class CalculatePoint : MonoBehaviour
 
         for (int j = 0; j < centerPoints.Count; j++)
         {
-            GameObject centerPoint = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            centerPoint.transform.SetParent(parent.transform);
+            GameObject centerPoint = Instantiate(centerPointPrefab,centerPoints[j],quaternion.identity,parent.transform);
             centerPoint.name = " center point " +  j  ;
-            centerPoint.GetComponent<BoxCollider>().size = new Vector3(1 ,11,7 );
             centerPoint.GetComponent<MeshRenderer>().enabled = renderBox;
-            centerPoint.transform.position = centerPoints[j];
-            centerPoint.GetComponent<BoxCollider>().isTrigger = true;
             points.Add(centerPoint);
         }
     }

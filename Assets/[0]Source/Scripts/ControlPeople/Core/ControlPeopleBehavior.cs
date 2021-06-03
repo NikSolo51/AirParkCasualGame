@@ -1,60 +1,57 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.Burst;
 using UnityEngine;
 
 /*
   Description:
-  Objects with the AddPeoplesToLinkList component are attracted 
-  to the coordinates recorded in the coordinatesList.
+  Objects with the AddPeoplesTopeopleTransformsList component are attracted 
+  to the coordinates recorded in the existingPointsList.
  */
 
-[BurstCompile]
+
 public class ControlPeopleBehaviour : MonoBehaviour
 {
     public ControlPeople _controlPeople;
     public CreatePointsAtMousePosition _createPointsAtMousePosition;
-    public List<Transform> LinkList = new List<Transform>();
+    public List<Transform> peopleTransformsList = new List<Transform>();
     public Dictionary<int, Transform> peopleDictionary = new Dictionary<int, Transform>();
-    public int nearestPoint;
-
-
     //List of dictionaries of Points and people adjacent to them
-    public List<Dictionary<Transform, Vector3>> ListOfDictionariesOfPointsAndPeople =
+    public List<Dictionary<Transform, Vector3>> ListOfDictionariesPointsAndPeople =
         new List<Dictionary<Transform, Vector3>>();
-
+    
     public int queue = 0;
+
+
+    public void CheckPeopleTransformList()
+    {
+        for (int i = 0; i < peopleTransformsList.Count; i++)
+        {
+            if (!peopleTransformsList[i])
+            {
+                peopleTransformsList.RemoveAt(i);
+            }
+        }
+    }
     
     public void InitializingTheUsedPeopleDictionarySheet()
     {
-        ListOfDictionariesOfPointsAndPeople.Add(new Dictionary<Transform, Vector3>());
+        ListOfDictionariesPointsAndPeople.Add(new Dictionary<Transform, Vector3>());
     }
 
     public void PeopleDictionaryAdd(int id, Transform people)
     {
         peopleDictionary.Add(id, people);
-        peopleDictionary = SortDictionary(peopleDictionary);
-        ConvertDictionaryToList();
+        
+        // Сортируем людей по их Id, от меньшего к большему.
+        peopleDictionary = SortDictionaryByKeyValue(peopleDictionary);
+        
+        peopleTransformsList = peopleDictionary.Select(kvp => kvp.Value).ToList();
     }
-
-    public void ConvertDictionaryToList()
-    {
-        LinkList = peopleDictionary.Select(kvp => kvp.Value).ToList();
-    }
-
-    public void IncrementQueue()
-    {
-        queue++;
-    }
-
-    public void ClearIfQueueEqualsZero()
-    {
-        if (queue == ListOfDictionariesOfPointsAndPeople.Count)
-            queue = 0;
-    }
-
-    private Dictionary<int, Transform> SortDictionary(Dictionary<int, Transform> peopleDic)
+    
+    
+    private Dictionary<int, Transform> SortDictionaryByKeyValue(Dictionary<int, Transform> peopleDic)
     {
         var orderedKeyValuePairs = peopleDic.OrderBy(key => key.Key);
 
@@ -63,41 +60,44 @@ public class ControlPeopleBehaviour : MonoBehaviour
 
     public int GetPeopleDictionaryCount() => peopleDictionary.Count;
 
-    public void NearestPoint(List<Transform> pointsList, Vector2 point)
+    public int GetClosestPersonById(List<Transform> peopleList, Vector2 point)
     {
-        float distanceToClosestEnemy = Mathf.Infinity;
-        int closestPoint = 0;
+        float distanceToClosestPerson = Mathf.Infinity;
+        int _closestPersonId = 0;
 
-        foreach (Transform currentPoint in pointsList)
+        foreach (Transform currentPerson in peopleList)
         {
-            for (int i = 0; i < ListOfDictionariesOfPointsAndPeople.Count; i++)
+            if(!currentPerson)
+                return _closestPersonId;
+            
+            for (int i = 0; i < ListOfDictionariesPointsAndPeople.Count; i++)
             {
-                if (ListOfDictionariesOfPointsAndPeople[i].ContainsKey(currentPoint))
+                if (ListOfDictionariesPointsAndPeople[i].ContainsKey(currentPerson))
                 {
                     goto Continue;
                 }
             }
-
-            float distanceToEnemy = (point - new Vector2(currentPoint.localPosition.x, currentPoint.localPosition.y))
+            
+            float distanceToPerson = (point - new Vector2(currentPerson.localPosition.x, currentPerson.localPosition.y))
                 .sqrMagnitude;
-            if (distanceToEnemy < distanceToClosestEnemy)
+            if (distanceToPerson < distanceToClosestPerson)
             {
-                distanceToClosestEnemy = distanceToEnemy;
-                closestPoint = currentPoint.GetSiblingIndex();
+                distanceToClosestPerson = distanceToPerson;
+                _closestPersonId = currentPerson.GetSiblingIndex();
             }
 
             Continue: ;
         }
 
-        nearestPoint = closestPoint;
+        return _closestPersonId;
     }
 
 
-    public bool ContainsNearestPoint(List<Dictionary<Transform, Vector3>> ListOfDictionary, int NearestPoint)
+    public bool CheckContainsClosestPersonById(List<Dictionary<Transform, Vector3>> ListOfDictionary, int personId)
     {
         foreach (var dic in ListOfDictionary)
         {
-            if (dic.ContainsKey(LinkList[NearestPoint]))
+            if (dic.ContainsKey(peopleTransformsList[personId]))
             {
                 return true;
             }
@@ -108,35 +108,30 @@ public class ControlPeopleBehaviour : MonoBehaviour
 
     public void ChooseTheNearestPerson()
     {
-        for (int i = 0; i < _createPointsAtMousePosition.coordinatesList.Count; i++)
+        int closestPersonId;
+        
+        for (int i = 0; i < _createPointsAtMousePosition.existingPointsList.Count; i++)
         {
-            NearestPoint(_controlPeople.controlPeopleBehaviour.LinkList,
-                _createPointsAtMousePosition.coordinatesList[i]);
+            
+            closestPersonId =  GetClosestPersonById(peopleTransformsList,
+                _createPointsAtMousePosition.existingPointsList[i]);
 
-            if (LinkList[i] != null)
+            if (peopleTransformsList[i] != null)
             {
-                foreach (var dic in ListOfDictionariesOfPointsAndPeople)
+                
+                foreach (var dic in ListOfDictionariesPointsAndPeople)
                 {
-                    if (dic.ContainsKey(LinkList[nearestPoint]))
-                    {
-                        NearestPoint(_controlPeople.controlPeopleBehaviour.LinkList,
-                            _createPointsAtMousePosition.coordinatesList[i]);
-                    }
-                }
-
-                foreach (var dic in ListOfDictionariesOfPointsAndPeople)
-                {
-                    if (dic.ContainsValue(_createPointsAtMousePosition.coordinatesList[i]))
+                    if (dic.ContainsValue(_createPointsAtMousePosition.existingPointsList[i]))
                     {
                         goto Continue;
                     }
                 }
 
-                if (!ContainsNearestPoint(ListOfDictionariesOfPointsAndPeople, nearestPoint))
+                if (!CheckContainsClosestPersonById(ListOfDictionariesPointsAndPeople, closestPersonId))
                 {
-                    ListOfDictionariesOfPointsAndPeople[queue].Add(LinkList[nearestPoint],
-                        _createPointsAtMousePosition.coordinatesList[i]);
-                    _createPointsAtMousePosition.coord = _createPointsAtMousePosition.localValueCoord;
+                    ListOfDictionariesPointsAndPeople[queue].Add(peopleTransformsList[closestPersonId],
+                        _createPointsAtMousePosition.existingPointsList[i]);
+                    _createPointsAtMousePosition.coord = _createPointsAtMousePosition.newPoint;
                 }
                 else
                 {

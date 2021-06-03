@@ -95,7 +95,7 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -105,10 +105,12 @@ TextureImporter:
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
   alphaIsTransparency: 1
-  spriteTessellationDetail: -1
+  spriteTessellationDetail: 0
   textureType: 8
   textureShape: 1
   singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
   maxTextureSizeSet: 0
   compressionQualitySet: 0
   textureFormatSet: 0
@@ -427,7 +429,156 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
-    outline: []
+    - serializedVersion: 2
+      name: fog_5
+      rect:
+        serializedVersion: 2
+        x: 6
+        y: 132
+        width: 53
+        height: 53
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c34aa9e3a218d20c0800000000000000
+      internalID: -4598877626036476868
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: fog_6
+      rect:
+        serializedVersion: 2
+        x: 68
+        y: 137
+        width: 54
+        height: 51
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8c220f17396109770800000000000000
+      internalID: 8615410909687325384
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: fog_7
+      rect:
+        serializedVersion: 2
+        x: 129
+        y: 132
+        width: 58
+        height: 54
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 14dd6e8780e395a50800000000000000
+      internalID: 6510302942449818945
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: fog_8
+      rect:
+        serializedVersion: 2
+        x: 194
+        y: 130
+        width: 60
+        height: 59
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: effb27d988902cbc0800000000000000
+      internalID: -3764435856166567938
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline:
+    - - {x: -97.91153, y: 75.39125}
+      - {x: -118.14464, y: 85.09407}
+      - {x: -117.54644, y: 118.59329}
+      - {x: -83.44899, y: 117.09779}
+      - {x: -65.20386, y: 78.21475}
+    - - {x: -61.016464, y: 76.12105}
+      - {x: -61.016464, y: 123.97711}
+      - {x: -3.2900848, y: 123.97711}
+      - {x: -3.2900848, y: 76.12105}
+    - - {x: 3.5892181, y: 70.13904}
+      - {x: 3.5892181, y: 114.70499}
+      - {x: 68.194916, y: 114.70499}
+      - {x: 68.194916, y: 70.13904}
+    - - {x: 69.98952, y: 73.130035}
+      - {x: 69.98952, y: 123.97711}
+      - {x: 119.04196, y: 128}
+      - {x: 122.33208, y: 73.130035}
+    - - {x: -123.827545, y: 4.3369446}
+      - {x: -124.12665, y: 57.875916}
+      - {x: -68.49397, y: 57.875916}
+      - {x: -67.89577, y: 4.037842}
+    - - {x: -61.31556, y: -0.4486618}
+      - {x: -61.31556, y: 59.670517}
+      - {x: -5.981987, y: 59.670517}
+      - {x: -5.981987, y: -0.4486618}
+    - - {x: 2.3928223, y: 3.4396362}
+      - {x: 2.3928223, y: 56.081314}
+      - {x: 62.811096, y: 56.081314}
+      - {x: 62.811096, y: 3.4396362}
+    - - {x: 69.39131, y: 3.4396362}
+      - {x: 69.39131, y: 58.17502}
+      - {x: 125.02399, y: 58.17502}
+      - {x: 125.02399, y: 3.4396362}
+    - - {x: -118.14464, y: -58.17504}
+      - {x: -118.14464, y: -6.4306717}
+      - {x: -72.38228, y: -6.4306717}
+      - {x: -72.38228, y: -58.17504}
+    - - {x: -62.21286, y: -57.27774}
+      - {x: -62.21286, y: -5.533371}
+      - {x: -0.29908752, y: -5.533371}
+      - {x: -0.29908752, y: -57.27774}
+    - - {x: 6.281128, y: -56.679535}
+      - {x: 6.281128, y: -5.234268}
+      - {x: 58.623703, y: -5.234268}
+      - {x: 58.623703, y: -56.679535}
+    - - {x: 67.59671, y: -59.371437}
+      - {x: 67.59671, y: -7.6270676}
+      - {x: 125.32309, y: -7.6270676}
+      - {x: 125.32309, y: -59.371437}
+    - - {x: -124.724846, y: -119.78972}
+      - {x: -124.724846, y: -69.540855}
+      - {x: -67.89577, y: -69.540855}
+      - {x: -67.89577, y: -119.78972}
+    - - {x: -59.221863, y: -123.37892}
+      - {x: -59.221863, y: -71.933655}
+      - {x: -4.7855835, y: -71.933655}
+      - {x: -4.7855835, y: -123.37892}
+    - - {x: 2.3928223, y: -124.87443}
+      - {x: 2.3928223, y: -68.34445}
+      - {x: 59.221893, y: -68.34445}
+      - {x: 59.221893, y: -124.87443}
+    - - {x: 67.29761, y: -122.182526}
+      - {x: 67.29761, y: -70.13905}
+      - {x: 124.42578, y: -70.13905}
+      - {x: 124.42578, y: -122.182526}
     physicsShape: []
     bones: []
     spriteID: 2e44fee7a6500a84093ddfc6767df037

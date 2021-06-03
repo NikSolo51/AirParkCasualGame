@@ -125,7 +125,7 @@ public class CamultLine : MonoBehaviour
         }
 
         curveCoordinates = new Vector3[pointsToMake];
-        Debug.Log(curveCoordinates);
+        
         Tangents = new Vector3[pointsToMake];
 
         int closedAdjustment = closedLoop ? 0 : 1;
@@ -229,7 +229,6 @@ public class CamultLine : MonoBehaviour
             centerPoint.name = " center point " + i;
             centerPoint.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
             centerPoint.GetComponent<MeshRenderer>().enabled = renderCubeStatic;
-            centerPoint.GetComponent<BoxCollider>().isTrigger = true;
 
             linePoints.Add(centerPoint);
         }
